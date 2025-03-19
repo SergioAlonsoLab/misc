@@ -214,8 +214,3 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
   return(list(plot1=g1,plot2=g2,plot3=g3,plot4=g4,data=x,models=models,genes_in_region=gir[,1:10]))
   
 }
-
-
-createPlots(gene_region("TBX20")+5000)
-
-
