@@ -19,7 +19,7 @@ for(i in 1:25) {
 # alternatively, download foo.xslx and read it into R
 # https://github.com/SergioAlonsoLab/misc/blob/main/foo.xlsx
 
-foo <- read.xlsx2("~/Downloads/foo.xlsx",1)
+foo <- read.xlsx2("~/Downloads/foo.xlsx",1) %>% as.data.table
 
 # d0 will store the real data to be analyzed
 
