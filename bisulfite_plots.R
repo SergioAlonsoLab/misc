@@ -12,9 +12,6 @@ for(i in 1:25) {
 }
 
 
-
-
-
 # d0 will store the real data to be analyzed
 
 d0 <- foo
