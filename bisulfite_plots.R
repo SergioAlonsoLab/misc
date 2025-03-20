@@ -30,7 +30,8 @@ d0 <- foo
 d0 <- melt(d0,id.vars=c("Cell_Line","Sequence"),variable.name = "CG")
 d0[,Position := gsub("CG_","",CG) %>% as.numeric()]
 d0[,CG:=sprintf("CG_%05i",Position)]
-
+d0[,value:=as.numeric(value)]
+                    
 # some examples
 
 # with coordinates
