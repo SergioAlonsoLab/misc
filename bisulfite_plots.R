@@ -49,4 +49,8 @@ ggplot(d0) + aes(CG,value) + geom_boxplot(aes(fill=Cell_Line),alpha=.4,outliers 
   theme(axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
   xlab("") +
   ylab("Methylation")
+
+# some statistics
+
+aov(value ~ Cell_Line,d0) %>% TukeyHSD
   
