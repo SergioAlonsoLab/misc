@@ -2,15 +2,24 @@
 library(ggplot2)
 library(data.table)
 library(tidyr)
+library(xlsx)
 
 # Create a fake data.table for testing (foo)
 
-foo <- data.table(Cell_Line=sample(c("LS174T","CaCo2","HCT116","HT29"),30,replace=T),Sequence=factor(1:30))
+fakenames <- sapply(1:1000,function(i) sample(LETTERS,8,replace=T) %>% paste(collapse=""))
+
+
+foo <- data.table(Cell_Line=rep(c("LS174T","CaCo2","HCT116","HT29"),each=10),
+                  Sequence=sample(fakenames,40))
 
 for(i in 1:25) {
-  foo[,(paste0("CG_",sample(1:10000,1))) := runif(30,0,1)] -> foo
+  foo[,(paste0("CG_",sample(1:10000,1))) := sample(c(0,0.25,0.5,0.75,1),40,replace=T,prob=c(5,1,1,1,5))] -> foo
 }
 
+# alternatively, download foo.xslx and read it into R
+# https://github.com/SergioAlonsoLab/misc/blob/main/foo.xlsx
+
+foo <- read.xlsx2("~/Downloads/foo.xlsx",1)
 
 # d0 will store the real data to be analyzed
 
