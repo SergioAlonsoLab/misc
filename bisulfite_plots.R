@@ -63,7 +63,7 @@ ggplot(d0) + aes(Position,Sequence) +
   geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
   
   # color of the methylation scale
-  scale_fill_gradient("Methylation",low = "#E9C46A", high="#264653", limits=c(0,1)) +
+  scale_fill_gradient("Methylation",low = "#caf0f8", high="#03045e", limits=c(0,1)) +
   
   # separate graphs by cell line. Number of columns can be indicated in ncol
   facet_wrap(~ Cell_Line,scales = "free",ncol=2)
