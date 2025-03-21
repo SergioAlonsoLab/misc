@@ -2,13 +2,11 @@
 library(ggplot2)
 library(data.table)
 library(tidyr)
-library(xlsx)
+library(readxl)
 
 # Create a fake data.table for testing (foo)
 
 fakenames <- sapply(1:1000,function(i) sample(LETTERS,8,replace=T) %>% paste(collapse=""))
-
-
 foo <- data.table(Cell_Line=rep(c("LS174T","CaCo2","HCT116","HT29"),each=10),
                   Sequence=sample(fakenames,40))
 
@@ -19,7 +17,16 @@ for(i in 1:25) {
 # alternatively, download foo.xslx and read it into R
 # https://github.com/SergioAlonsoLab/misc/blob/main/foo.xlsx
 
-foo <- read.xlsx2("~/Downloads/foo.xlsx",1) %>% as.data.table
+foo <- read_xlsx("~/Downloads/foo.xlsx",sheet=1) %>% as.data.table
+
+# introduce some NAs to better simulate real experiments
+
+for(i in 1:25) {
+  
+  foo[sample(1:nrow(foo),1),(sample(colnames(foo)[3:ncol(foo)],1)) := NA] 
+  
+}
+
 
 # d0 will store the real data to be analyzed
 
@@ -31,25 +38,43 @@ d0 <- melt(d0,id.vars=c("Cell_Line","Sequence"),variable.name = "CG")
 d0[,Position := gsub("CG_","",CG) %>% as.numeric()]
 d0[,CG:=sprintf("CG_%05i",Position)]
 d0[,value:=as.numeric(value)]
-                    
+
 # some examples
 
-# with coordinates
+# with coordinates (position)
 
 ggplot(d0) + aes(Position,Sequence) + 
+  # horizontal lines
   geom_hline(aes(yintercept = Sequence)) +
-  geom_point(aes(fill=value),pch=21,size=5) +
+
+  # plot the NAs
+  geom_point(pch=19,size=1,data=d0[is.na(value)]) + 
+  
+  # plot the methylation values
+  geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
+  
+  # color of the methylation scale
   scale_fill_gradient("Methylation",low = "white", high="black",limits=c(0,1)) +
-  facet_wrap(~ Cell_Line,scales = "free")
+  
+  # separate graphs by cell line. Number of columns can be indicated in ncol
+  facet_wrap(~ Cell_Line,scales = "free",ncol=2)
 
 # homogeneous distributions of CpG sites
-
 ggplot(d0) + aes(CG,Sequence) + 
+  #horizontal lines
   geom_hline(aes(yintercept = Sequence)) +
-  geom_point(aes(fill=value),pch=21,size=5) +
+  
+  # plot the NAs
+  geom_point(pch=19,size=1,data=d0[is.na(value)]) + 
+  
+  # plot the methylation values
+  geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
+  
+  # color of the methylation scale
   scale_fill_gradient("Methylation",low = "white", high="black",limits=c(0,1)) +
-  theme(axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
-  facet_wrap(~ Cell_Line,scales = "free") + 
+  
+  # separate graphs by cell line. Number of columns can be indicated in ncol
+  facet_wrap(~ Cell_Line,scales = "free",ncol=2) + 
   xlab("")
 
 # boxplots
