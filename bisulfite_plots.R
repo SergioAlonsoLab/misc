@@ -55,7 +55,7 @@ ggplot(d0) + aes(Position,Sequence) +
   # plot the NAs
   geom_point(pch=19,size=1,data=d0[is.na(value)]) + 
   
-  # plot the methylation values
+  # plot the methylation values (size parameter controls dot size)
   geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
   
   # color of the methylation scale
@@ -73,7 +73,7 @@ ggplot(d0) + aes(CG,Sequence) +
   # plot the NAs
   geom_point(pch=19,size=1,data=d0[is.na(value)]) + 
   
-  # plot the methylation values
+  # plot the methylation values (size parameter controls dot size)
   geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
   
   # color of the methylation scale
