@@ -1,3 +1,5 @@
+# Script to plot bisulfite sequencing results
+# by Sergio Alonso 
 
 library(ggplot2)
 library(data.table)
