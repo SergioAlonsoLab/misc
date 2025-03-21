@@ -44,6 +44,10 @@ d0[,Position := gsub("CG_","",CG) %>% as.numeric()]
 d0[,CG:=sprintf("CG_%05i",Position)]
 d0[,value:=as.numeric(value)]
 
+# choose nice colors!!!
+
+browseURL("https://coolors.co/palettes/trending")
+
 # some examples
 
 # with coordinates (position)
@@ -51,7 +55,7 @@ d0[,value:=as.numeric(value)]
 ggplot(d0) + aes(Position,Sequence) + 
   # horizontal lines
   geom_hline(aes(yintercept = Sequence)) +
-
+  
   # plot the NAs
   geom_point(pch=19,size=1,data=d0[is.na(value)]) + 
   
@@ -59,7 +63,7 @@ ggplot(d0) + aes(Position,Sequence) +
   geom_point(aes(fill=value),pch=21,size=5,data=d0[!is.na(value)]) +
   
   # color of the methylation scale
-  scale_fill_gradient("Methylation",low = "white", high="black",limits=c(0,1)) +
+  scale_fill_gradient("Methylation",low = "#E9C46A", high="#264653", limits=c(0,1)) +
   
   # separate graphs by cell line. Number of columns can be indicated in ncol
   facet_wrap(~ Cell_Line,scales = "free",ncol=2)
@@ -103,7 +107,7 @@ d0[,list(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T)),by=list(Cell_Line,CG)] %
   theme(axis.text.x = element_text(angle=90,hjust=1,vjust=0.5)) +
   xlab("") +
   ylab("Methylation")
-  
+
 # some statistics
 
 # Analysis of variance
