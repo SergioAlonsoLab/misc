@@ -29,6 +29,9 @@ for(i in 1:25) {
 
 
 # d0 will store the real data to be analyzed
+# read your data with
+# d0 <- read_xlsx("PATH_TO_YOUR_DATA_IN_EXCEL",sheet=NAME_OR_SHEET_NUMBER_TO_READ) %>% as.data.table
+# then delete or comment the line 36
 
 d0 <- foo
 
