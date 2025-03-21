@@ -63,6 +63,7 @@ ggplot(d0) + aes(Position,Sequence) +
   facet_wrap(~ Cell_Line,scales = "free",ncol=2)
 
 # homogeneous distributions of CpG sites
+
 ggplot(d0) + aes(CG,Sequence) + 
   #horizontal lines
   geom_hline(aes(yintercept = Sequence)) +
