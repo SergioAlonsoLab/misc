@@ -60,7 +60,7 @@ multiModal <- function(x) {
   binwidth <- diff(range(x)) / 50
   
   xrange <- seq(from=min(x),to=max(x),l=1000)
- 
+
   p1 <- ggplot(d0) + aes(x) +
     geom_histogram(aes(fill=group1),binwidth=binwidth) +
     geom_density(aes(y=after_stat(density * n * binwidth))) +
@@ -87,13 +87,13 @@ multiModal <- function(x) {
     
   print(p1 + p2 + p3)
   
-  invisible(list(fit1=fit1,fit2=fit2,fit3=fit3,f1d=fit1dens,f2d=fit2dens,f3d=fit3dens,t2=t2,t3=t3,best=best))
+  invisible(list(d0=d0,fit1=fit1,fit2=fit2,fit3=fit3,f1d=fit1dens,f2d=fit2dens,f3d=fit3dens,t2=t2,t3=t3,best=best))
 }
 
 # run some examples
 
-multiModal(rnorm(1000))
-multiModal(c(rnorm(1000),rnorm(200,5,3)))
-multiModal(c(rnorm(1000),rnorm(200,10,3),rnorm(300,102,2)))
+multiModal(rnorm(1000)) 
+multiModal(c(rnorm(1000),rnorm(200,5,3))) -> results
+multiModal(c(rnorm(1000),rnorm(200,10,3),rnorm(300,20,2))) -> results
 
            
