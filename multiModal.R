@@ -60,8 +60,7 @@ multiModal <- function(x) {
   binwidth <- diff(range(x)) / 50
   
   xrange <- seq(from=min(x),to=max(x),l=1000)
-  plot(xrange,fit2dens(xrange))
-  
+ 
   p1 <- ggplot(d0) + aes(x) +
     geom_histogram(aes(fill=group1),binwidth=binwidth) +
     geom_density(aes(y=after_stat(density * n * binwidth))) +
