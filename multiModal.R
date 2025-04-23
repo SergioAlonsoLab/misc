@@ -74,7 +74,7 @@ multiModal <- function(x) {
     geom_density(aes(y=after_stat(density * n * binwidth))) +
     geom_line(aes(x=x,y),data=data.table(x=xrange,y=fit2dens(xrange) * n * binwidth),lty=2) +
     geom_vline(xintercept = t2,color="red") +
-    annotate("label",x=min(x),y=Inf,label=sprintf("LL = %.1f\nBIC = %.1f\np = %1.2g",fit2$loglik,bic2,prob2),hjust=0,vjust=1) +
+    annotate("label",x=min(x),y=Inf,label=sprintf("LL = %.1f\nBIC = %.1f\nM2 vs M1 p = %1.2g",fit2$loglik,bic2,prob2),hjust=0,vjust=1) +
     ylab("Counts")
   
   p3 <- ggplot(d0) + aes(x) +
@@ -82,7 +82,7 @@ multiModal <- function(x) {
     geom_density(aes(y=after_stat(density * n * binwidth))) + 
     geom_line(aes(x=x,y),data=data.table(x=xrange,y=fit3dens(xrange) * n * binwidth),lty=2) +
     geom_vline(xintercept = t3,color="red") +
-    annotate("label",x=min(x),y=Inf,label=sprintf("LL = %.1f\nBIC = %.1f\np = %1.2g",fit3$loglik,bic3,prob3),hjust=0,vjust=1) +
+    annotate("label",x=min(x),y=Inf,label=sprintf("LL = %.1f\nBIC = %.1f\nM3 vs M2 p = %1.2g",fit3$loglik,bic3,prob3),hjust=0,vjust=1) +
     ylab("Counts")
   
     
