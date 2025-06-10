@@ -59,7 +59,7 @@ myPalette$TSS <- c("TRUE"="#600","FALSE"="#FEE")
 myPalette$Position <- c(Upstream="#FEE",Promoter="#F55","Gene Body"="#FAA","Downstream"="#FEE")
 
 
-# Functions -----
+# Functions --------------
 
 b2m <- function(b) log2(b/(1-b))
 m2b <- function(m) 2^m/(1+2^m)
@@ -236,10 +236,9 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
 }
 
 
-createPlots(gene_region("STK33")+5000)
 
 
-# Heatmap ----
+# Heatmap ---------------
 
 
 geneHeatmap <- function(geneOfInterest,span=5000,orientation=c("Gene","Genome")) {
@@ -294,7 +293,7 @@ geneHeatmap <- function(geneOfInterest,span=5000,orientation=c("Gene","Genome"))
                      row_dend_width = unit(2,"in"),
                      row_names_gp = gpar(fontsize=9),
                      column_names_gp = gpar(fontsize=10),
-                     col = colorRamp2(breaks=seq(0,1,.1),colors=colorRampPalette(c("#DDF","blue4"))(11)),
+                     col = colorRamp2(breaks=seq(0,1,.1),colors=colorRampPalette(c("#EEF","blue4"))(11)),
                      right_annotation = cases.annotation,
                      top_annotation = probes.annotation,
                      column_title = geneOfInterest,
@@ -307,9 +306,9 @@ geneHeatmap <- function(geneOfInterest,span=5000,orientation=c("Gene","Genome"))
   
 }
 
-# Some examples
-                       
-geneHeatmap("STK33",5e3)
-geneHeatmap("STK33",5e3,"Genome")
+# Some examples -----
 
+geneHeatmap("ADAMTS19",5e3)
+geneHeatmap("OXGR1",5e3,"Genome")
+createPlots(gene_region("G0S2")+5000)
 
