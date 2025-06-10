@@ -1,3 +1,10 @@
+# Note: This script MUST be run from a folder that contains
+# a subvfolder named "data", which contains 4 rds objects
+# genes38.rds  (information of genes in the HG38)
+# methylation.rds (EPIC arrays methylation data)
+# phenotype.rds (phenotype data of the analysed cases)
+# probes.rds (manifest of the EPIC arrays)
+
 # Load libraries ------
 
 library(ggplot2)
@@ -37,9 +44,20 @@ probes <- probes[!is.na(CHR_hg38)] # remove probes mapped in genome patches
 
 # Color palettes ---------
 
-cgi.colors <- c("Open Sea"="#055c9d","Shelf"="#68bbe3","Shore"="#b68d40","Island"="#f8d210")
-gene.colors <- c("#264653","#2a9d8f","#e9c46a","#cda052","#f4a261","#e76f51")
-names(gene.colors) <- levels(genes$gene_biotype2)
+myPalette <- list()
+myPalette$CGI_Relation <- c("Open Sea"="#055c9d","Shelf"="#68bbe3","Shore"="#faedcd","Island"="#f8d210")
+
+myPalette$gene.colors <- c("#264653","#2a9d8f","#e9c46a","#cda052","#f4a261","#e76f51")
+names(myPalette$gene.colors) <- levels(genes$gene_biotype2)
+
+myPalette$TIL <- colorRampPalette(c("#FEE","#600"))(7)
+names(myPalette$TIL) <- levels(phenotype$TIL)
+
+myPalette$MSI <- c(MSS="grey",MSI="grey20")
+myPalette$Gender <- c("F"="#cfbaf0",M="#8eecf5")
+myPalette$TSS <- c("TRUE"="#600","FALSE"="#FEE")
+myPalette$Position <- c(Upstream="#FEE",Promoter="#F55","Gene Body"="#FAA","Downstream"="#FEE")
+
 
 # Functions -----
 
@@ -113,7 +131,7 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
     geom_boxplot(aes(fill=CGI_Relation),outliers = F,lwd=0.25,alpha=.5) +
     geom_point(aes(fill=CGI_Relation),pch=21,stroke=.2,size=2,show.legend = F) +
     facet_grid(MSI ~ TIL2,labeller=labeller(TIL2=addTIL)) +
-    scale_fill_manual(values=cgi.colors) +
+    scale_fill_manual(values=myPalette$CGI_Relation)+
     xlab(NULL) +
     scale_y_continuous(limits = c(0,1),breaks = c(0,.2,.5,.8,1)) +
     theme(axis.text.x.bottom = element_text(angle=90,hjust=1,vjust=.5),
@@ -138,8 +156,8 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
     geom_point(aes(x,y),data=gir) +
     geom_text_repel(aes(x=(x+xend)/2,y=y,label=label),data=gir,size=textsize,nudge_y=0.05) +
     
-    scale_fill_manual(values=cgi.colors) +
-    scale_color_manual(values=gene.colors) +
+    scale_fill_manual(values=myPalette$CGI_Relation)+
+    scale_color_manual(values=myPalette$gene.colors) +
     scale_y_continuous(limits = c(-0.4,1),breaks = c(0,.2,.5,.8,1)) +
     scale_x_continuous(labels=function(x) sprintf("%1.3fMbp",x/1e6)) +
     coord_cartesian(xlim=c(start(region),end(region))) +
@@ -151,7 +169,7 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
     geom_hline(yintercept = c(.2,.8),lty=2,lwd=.2) +
     geom_line(aes(group=Patient),lwd=.5,color="lightblue") +
     geom_point(aes(fill=CGI_Relation),size=2,pch=21,stroke=.2) +
-    scale_fill_manual(values=cgi.colors) +
+    scale_fill_manual(values=myPalette$CGI_Relation)+
     scale_y_continuous(limits = c(0,1),breaks = c(0,.2,.5,.8,1)) +
     facet_grid(MSI ~ TIL2,labeller=labeller(TIL2=addTIL)) +
     xlab("") +
@@ -207,7 +225,7 @@ createPlots <- function(region,group=c("both","MSS","MSI"),textsize=3) {
                  arrow=arrow(ends="both",type="open",length=unit(0.02,"inches"),angle=90)) +
     geom_point(aes(fill=CGI_Relation),pch=21,stroke=0.2,size=2) +
     facet_grid(MSI ~ Model) +
-    scale_fill_manual(values=cgi.colors) +
+    scale_fill_manual(values=myPalette$CGI_Relation) +
     xlab("") +
     ylab("Methylation difference") +
     theme(axis.text.x.bottom = element_text(angle=90,hjust=1,vjust=.5),
@@ -224,7 +242,9 @@ createPlots(gene_region("STK33")+5000)
 # Heatmap ----
 
 
-geneHeatmap <- function(geneOfInterest,span=5000) {
+geneHeatmap <- function(geneOfInterest,span=5000,orientation=c("Gene","Genome")) {
+  
+  orientation <- match.arg(orientation)
   
   gof <- genes[hgnc_symbol==geneOfInterest,]
   
@@ -252,16 +272,9 @@ geneHeatmap <- function(geneOfInterest,span=5000) {
   
   p[,Position:=factor(Position,c("Upstream","Promoter","Gene Body","Downstream"))]
   
-  methylation[intersect(p$IlmnID,rownames(methylation)),] %>% t %>% m2b -> m
+  if(orientation=="Genome") p <- p[order(Start_hg38)]
   
-  myPalette <- list()
-  myPalette$TIL <- colorRampPalette(c("#FEE","#600"))(7)
-  names(myPalette$TIL) <- levels(phenotype$TIL)
-  myPalette$MSI <- c(MSS="grey",MSI="grey20")
-  myPalette$Gender <- c("F"="#cfbaf0",M="#8eecf5")
-  myPalette$CGI_Relation <- c(Island="#f9c74f",Shore="#f0ead2",Shelf="#99d98c","Open Sea"="#1e6091")
-  myPalette$TSS <- c("TRUE"="#600","FALSE"="#FEE")
-  myPalette$Position <- c(Upstream="#FEE",Promoter="#F55","Gene Body"="#FAA","Downstream"="#FEE")
+  methylation[intersect(p$IlmnID,rownames(methylation)),] %>% t %>% m2b -> m
   
   cases.annotation <- rowAnnotation(na_col = "grey75",
                                     df=phenotype[,list(Gender,MSI,TIL)],
@@ -281,7 +294,7 @@ geneHeatmap <- function(geneOfInterest,span=5000) {
                      row_dend_width = unit(2,"in"),
                      row_names_gp = gpar(fontsize=9),
                      column_names_gp = gpar(fontsize=10),
-                     col = colorRamp2(breaks=seq(0,1,.1),colors=colorRampPalette(c("darkblue","yellow"))(11)),
+                     col = colorRamp2(breaks=seq(0,1,.1),colors=colorRampPalette(c("#DDF","blue4"))(11)),
                      right_annotation = cases.annotation,
                      top_annotation = probes.annotation,
                      column_title = geneOfInterest,
@@ -294,6 +307,9 @@ geneHeatmap <- function(geneOfInterest,span=5000) {
   
 }
 
-png("output/test_heatmap.png",width = 10,height = 14,units = "in",res = 300)
+# Some examples
+                       
 geneHeatmap("STK33",5e3)
-dev.off()
+geneHeatmap("STK33",5e3,"Genome")
+
+
