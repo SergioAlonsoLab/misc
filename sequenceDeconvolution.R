@@ -100,5 +100,8 @@ AlignLS <- sequenceDeconvolution(oxgr1$OXGR1, reverseComplementABI(makeBaseCalls
 AlignSW <- sequenceDeconvolution(oxgr1$OXGR1, reverseComplementABI(makeBaseCalls(SW480)))
 
 # Visualize alignments ------
-BrowseSeqs(AlignLS, colWidth = 80)
-BrowseSeqs(AlignSW, colWidth = 80)
+BrowseSeqs(AlignLS, colWidth = 80,title = "Deconvolution of LS174T - OXGR1")
+BrowseSeqs(AlignLS[c(1,6)], colWidth = 80,title = "Deconvolution of LS174T - OXGR1")
+
+BrowseSeqs(AlignSW, colWidth = 80,title = "Deconvolution of SW480 - OXGR1")
+BrowseSeqs(AlignSW[c(1,6)], colWidth = 80,title = "Deconvolution of SW480 - OXGR1")
